@@ -1,9 +1,16 @@
 <?php
 class Database {
-    private $host = 'localhost';
-    private $db_name = 'mechanicalfix_db';
-    private $username = 'root';
-    private $password = '';
+    private $host;
+    private $db_name;
+    private $username;
+    private $password;
+
+    public function __construct() {
+        $this->host = getenv('DB_HOST');
+       $this->db_name = getenv('DB_NAME');
+       $this->username = getenv('DB_USERNAME');
+       $this->password = getenv('DB_PASSWORD');
+    }
     public $conn;
 
     public function getConnection() {
