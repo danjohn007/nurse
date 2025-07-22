@@ -38,6 +38,27 @@ switch($action) {
 
 function createSolicitud($data, $solicitud, $usuario) {
     try {
+        // Validate required fields
+        $required_fields = ['nombre', 'telefono', 'tipo_servicio', 'descripcion'];
+        foreach ($required_fields as $field) {
+            if (empty($data[$field])) {
+                echo json_encode(['success' => false, 'message' => "Campo requerido: $field"]);
+                return;
+            }
+        }
+        
+        // Validate email format if provided
+        if (!empty($data['email']) && !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            echo json_encode(['success' => false, 'message' => 'Formato de email inválido']);
+            return;
+        }
+        
+        // Validate phone format (basic validation)
+        if (!preg_match('/^[0-9]{10,15}$/', $data['telefono'])) {
+            echo json_encode(['success' => false, 'message' => 'Formato de teléfono inválido (debe contener solo números, 10-15 dígitos)']);
+            return;
+        }
+        
         // First, check if client exists or create new one
         $clienteId = null;
         $existingUser = $solicitud->buscarPorTelefono($data['telefono']);
