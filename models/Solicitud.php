@@ -29,6 +29,10 @@ class Solicitud {
         $this->conn = $db;
     }
 
+    public function getConnection() {
+        return $this->conn;
+    }
+
     public function create() {
         $query = "INSERT INTO " . $this->table_name . " 
                 SET cliente_id=:cliente_id, tipo_servicio=:tipo_servicio, 

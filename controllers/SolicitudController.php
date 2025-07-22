@@ -45,10 +45,16 @@ function createSolicitud($data, $solicitud, $usuario) {
         if ($existingUser) {
             // Update existing user data
             $query = "SELECT id FROM usuarios WHERE telefono = :telefono";
-            $stmt = $solicitud->conn->prepare($query);
+            $stmt = $solicitud->getConnection()->prepare($query);
             $stmt->bindParam(':telefono', $data['telefono']);
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$result) {
+                echo json_encode(['success' => false, 'message' => 'Error: No se pudo encontrar el usuario existente']);
+                return;
+            }
+            
             $clienteId = $result['id'];
             
             // Update user info
@@ -77,6 +83,12 @@ function createSolicitud($data, $solicitud, $usuario) {
             // Send email with credentials (you would implement email sending here)
             // For now, we'll just log the password
             error_log("New client password for {$data['email']}: {$usuario->password}");
+        }
+        
+        // Validate that we have a valid client ID before proceeding
+        if (!$clienteId || $clienteId === null) {
+            echo json_encode(['success' => false, 'message' => 'Error: No se pudo obtener un ID de cliente válido']);
+            return;
         }
         
         // Create service request
@@ -147,7 +159,7 @@ function updateStatus($data, $solicitud) {
             // Add activity log
             $query = "INSERT INTO actividades (solicitud_id, usuario_id, comentario, tipo_actividad) 
                       VALUES (:solicitud_id, :usuario_id, :comentario, 'cambio_estatus')";
-            $stmt = $solicitud->conn->prepare($query);
+            $stmt = $solicitud->getConnection()->prepare($query);
             $stmt->bindParam(':solicitud_id', $data['id']);
             $stmt->bindParam(':usuario_id', $data['usuario_id']);
             $comentario = "Estatus cambiado a: " . $data['estatus'];
@@ -165,6 +177,18 @@ function updateStatus($data, $solicitud) {
 
 function assignMechanic($data, $solicitud) {
     try {
+        // First validate that the mechanic exists
+        $query = "SELECT id FROM usuarios WHERE id = :mecanico_id AND tipo_usuario = 'mecanico' AND estatus = 'activo'";
+        $stmt = $solicitud->getConnection()->prepare($query);
+        $stmt->bindParam(':mecanico_id', $data['mecanico_id']);
+        $stmt->execute();
+        $mechanic = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$mechanic) {
+            echo json_encode(['success' => false, 'message' => 'Error: El mecánico especificado no existe o no está activo']);
+            return;
+        }
+        
         $solicitud->id = $data['solicitud_id'];
         $solicitud->mecanico_id = $data['mecanico_id'];
         
@@ -172,7 +196,7 @@ function assignMechanic($data, $solicitud) {
             // Add activity log
             $query = "INSERT INTO actividades (solicitud_id, usuario_id, comentario, tipo_actividad) 
                       VALUES (:solicitud_id, :usuario_id, :comentario, 'asignacion')";
-            $stmt = $solicitud->conn->prepare($query);
+            $stmt = $solicitud->getConnection()->prepare($query);
             $stmt->bindParam(':solicitud_id', $data['solicitud_id']);
             $stmt->bindParam(':usuario_id', $data['usuario_id']);
             $comentario = "Mecánico asignado";

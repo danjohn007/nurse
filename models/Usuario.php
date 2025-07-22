@@ -140,5 +140,22 @@ class Usuario {
     public function generateRandomPassword() {
         return substr(str_shuffle('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, 8);
     }
+
+    public function userExists($id, $tipo_usuario = null) {
+        $query = "SELECT id FROM " . $this->table_name . " WHERE id = :id";
+        if ($tipo_usuario) {
+            $query .= " AND tipo_usuario = :tipo_usuario";
+        }
+        $query .= " AND estatus = 'activo'";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":id", $id);
+        if ($tipo_usuario) {
+            $stmt->bindParam(":tipo_usuario", $tipo_usuario);
+        }
+        $stmt->execute();
+        
+        return $stmt->fetch(PDO::FETCH_ASSOC) !== false;
+    }
 }
 ?>
