@@ -465,6 +465,13 @@
             document.getElementById('prioridad').addEventListener('change', updateCosto);
         });
     </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
+    <?php
+        $googleMapsApiKey = getenv('GOOGLE_MAPS_API_KEY');
+        if (!$googleMapsApiKey) {
+            echo '<script>console.error("Google Maps API key is not set.");</script>';
+        } else {
+            echo '<script async defer src="https://maps.googleapis.com/maps/api/js?key=' . htmlspecialchars($googleMapsApiKey, ENT_QUOTES, 'UTF-8') . '&callback=initMap"></script>';
+        }
+    ?>
 </body>
 </html>
