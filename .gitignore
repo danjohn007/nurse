@@ -1,0 +1,58 @@
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# PHP
+vendor/
+composer.lock
+
+# Logs
+*.log
+logs/
+
+# Upload directories
+uploads/
+temp/
+
+# Configuration files with sensitive data
+config/database.local.php
+.env
+
+# Cache files
+cache/
+tmp/
+
+# Node modules (if using any frontend build tools)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Backup files
+*.bak
+*.backup
+*.sql.backup
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Development files
+/tests/
+/docs/dev/
+phpunit.xml
+/.phpunit.result.cache
+
+# Distribution files
+dist/
+build/
