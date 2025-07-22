@@ -113,8 +113,8 @@ CREATE TABLE servicios (
 );
 
 -- Insert default admin user
-INSERT INTO usuarios (nombre, email, telefono, password, tipo_usuario) VALUES 
-('Administrador', 'admin@mechanicalfix.com', '1234567890', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');
+-- NOTE: Default admin credentials should be generated securely during installation or deployment.
+-- Example: Use a script to create an admin user with a strong, unique password.
 
 -- Insert sample services
 INSERT INTO servicios (nombre, descripcion, precio_base, duracion_estimada, categoria) VALUES
