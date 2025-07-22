@@ -541,7 +541,7 @@ $avgRating = $mechanicData['calificacion_promedio'] ?? 0;
                     action: 'update_status',
                     id: id, 
                     estatus: status,
-                    usuario_id: <?php echo $_SESSION['user_id']; ?>
+                    usuario_id: <?php echo json_encode($_SESSION['user_id']); ?>
                 })
             })
             .then(response => response.json())
